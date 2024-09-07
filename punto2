@@ -1,0 +1,102 @@
+using System;
+using System.Collections.Generic;
+
+class Jugador
+{
+    public string Nombre { get; }
+    public string Posicion { get; }
+    public int Rendimiento { get; }
+
+    public Jugador(string nombre, string posicion, int rendimiento)
+    {
+        Nombre = nombre;
+        Posicion = posicion;
+        Rendimiento = rendimiento;
+    }
+}
+
+class Equipo
+{
+    private List<Jugador> jugadores = new List<Jugador>();
+
+    public void AgregarJugador(Jugador jugador) => jugadores.Add(jugador);
+
+    public int ObtenerPuntajeTotal()
+    {
+        int total = 0;
+        foreach (var jugador in jugadores)
+        {
+            total += jugador.Rendimiento;
+        }
+        return total;
+    }
+
+    public void MostrarJugadores()
+    {
+        foreach (var jugador in jugadores)
+        {
+            Console.WriteLine($"{jugador.Nombre} - {jugador.Posicion} - Rendimiento: {jugador.Rendimiento}");
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Jugador> jugadoresRegistrados = new List<Jugador>
+        {
+            new Jugador("Juan", "Base", 8),
+            new Jugador("Pedro", "Escolta", 7),
+            new Jugador("Luis", "Alero", 9),
+            new Jugador("Ana", "Ala-pívot", 8),
+            new Jugador("María", "Pívot", 7),
+            new Jugador("Carlos", "Base", 6)
+        };
+
+        var (equipo1, equipo2) = SeleccionarJugadores(jugadoresRegistrados);
+
+        Console.WriteLine("Equipo 1:");
+        equipo1.MostrarJugadores();
+        Console.WriteLine("\nEquipo 2:");
+        equipo2.MostrarJugadores();
+
+        DeterminarGanador(equipo1, equipo2);
+    }
+
+    static (Equipo, Equipo) SeleccionarJugadores(List<Jugador> jugadores)
+    {
+        Equipo equipo1 = new Equipo();
+        Equipo equipo2 = new Equipo();
+        Random rnd = new Random();
+
+        for (int i = 0; i < 3; i++)
+        {
+            int index = rnd.Next(jugadores.Count);
+            equipo1.AgregarJugador(jugadores[index]);
+            jugadores.RemoveAt(index);
+
+            index = rnd.Next(jugadores.Count);
+            equipo2.AgregarJugador(jugadores[index]);
+            jugadores.RemoveAt(index);
+        }
+
+        return (equipo1, equipo2);
+    }
+
+    static void DeterminarGanador(Equipo equipo1, Equipo equipo2)
+    {
+        int puntajeEquipo1 = equipo1.ObtenerPuntajeTotal();
+        int puntajeEquipo2 = equipo2.ObtenerPuntajeTotal();
+
+        Console.WriteLine($"\nPuntaje Equipo 1: {puntajeEquipo1}");
+        Console.WriteLine($"Puntaje Equipo 2: {puntajeEquipo2}");
+
+        if (puntajeEquipo1 > puntajeEquipo2)
+            Console.WriteLine("¡El Equipo 1 es el ganador!");
+        else if (puntajeEquipo2 > puntajeEquipo1)
+            Console.WriteLine("¡El Equipo 2 es el ganador!");
+        else
+            Console.WriteLine("¡Es un empate!");
+    }
+}
